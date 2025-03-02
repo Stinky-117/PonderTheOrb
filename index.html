@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en"> 
+
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orb Ponderer</title>
+    <style>
+        body {
+            background-color: #f0e6f5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .image_container img {
+            width: 975px;
+            height: 600px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #errorMessage {
+            color: red;
+            font-size: 38px;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            margin-top: 15px;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="image_container">
+        <img id="switchImage" src="opo.jpg" alt="Base Image">
+    </div>
+    <div>
+        <button id="startButton">Ponder the Orb</button>
+        <button id="resetButton">Turn off the Orb</button>
+    </div>
+    <p id="errorMessage"></p> <!-- Fixed ID consistency -->
+
+    <script>
+        const img = document.getElementById("switchImage");
+        const startButton = document.getElementById("startButton");
+        const resetButton = document.getElementById("resetButton");
+        const errorMessage = document.getElementById("errorMessage"); // Fixed: Ensure correct reference
+        const flickerImages = ["oph.jpg", "opf.jpg"];
+        let flickerCount = 6; // Number of times it flickers before settling
+        let orbState = false; // Fixed: Consistent camelCase naming
+        let flickerInterval;
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.visibility = "visible";
+
+            setTimeout(() => {
+                errorMessage.style.visibility = "hidden";
+            }, 2000);
+        }
+
+        startButton.addEventListener("click", function () {
+            if (orbState) {
+                showError("The orb is already being pondered!");
+                return;
+            }
+            orbState = true; 
+
+            let count = 0;
+            flickerInterval = setInterval(() => {
+                img.src = flickerImages[count % 2]; // Switch between oph.jpg and opf.jpg
+                count++;
+
+                if (count >= flickerCount) {
+                    clearInterval(flickerInterval); // Stop flickering
+                    img.src = "opf.jpg"; // Settle on opf.jpg
+                }
+            }, 100); // Flicker speed (200ms per switch)
+        });
+
+        resetButton.addEventListener("click", function () {
+            if (!orbState) {
+                showError("The orb is already off");
+                return;
+            }
+            clearInterval(flickerInterval); // Stop any ongoing flickering
+            img.src = "oph.jpg";
+            img.src = "opo.jpg"; // Reset to base image
+            orbState = false; // Set orb state back to off
+        });
+    </script>
+</body>
+</html>
